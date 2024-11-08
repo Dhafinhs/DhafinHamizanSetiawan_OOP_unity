@@ -8,7 +8,6 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
-        // Membuat instance Singleton untuk Player
         if (Instance == null)
         {
             Instance = this;
@@ -21,9 +20,18 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        // Mengambil referensi dari komponen PlayerMovement dan Animator
         playerMovement = GetComponent<PlayerMovement>();
-        animator = GetComponent<Animator>();
+
+        // Mengakses Animator di child object "Engine -> EngineEffect"
+        Transform engineEffect = transform.Find("Engine/EngineEffect");
+        if (engineEffect != null)
+        {
+            animator = engineEffect.GetComponent<Animator>();
+        }
+        else
+        {
+            Debug.LogError("Engine -> EngineEffect not found!");
+        }
     }
 
     private void FixedUpdate()
@@ -33,8 +41,9 @@ public class Player : MonoBehaviour
 
     private void LateUpdate()
     {
-        animator.SetBool("IsMoving", playerMovement.IsMoving());
+        if (animator != null)
+        {
+            animator.SetBool("IsMoving", playerMovement.IsMoving());
+        }
     }
 }
-
-
